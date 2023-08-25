@@ -1,30 +1,26 @@
-# Ride Sharing Service Implementation Readme
+# Ride Sharing Service Implementation Documentation
 
-This repository contains the implementation of a ride sharing service developed by Venkat Sai Putagumpalla for the Spring 2023 term. The project utilizes data structures like Red-Black Trees and Min Heaps to efficiently manage and track pending ride requests.
+**ADS Report - Spring 2023**
 
-## Project Details
-
-- **Name:** Venkat Sai Putagumpalla
-- **UFID:** 33088798
-- **UF Email:** v.putagumpalla@ufl.edu
+Author: Venkat Sai Putagumpalla  
+UFID: 33088798  
+UF Email: v.putagumpalla@ufl.edu
 
 ## Project Description
 
-The goal of this project is to create a ride sharing service that keeps track of pending ride requests using a combination of Red-Black Trees and Min Heaps. Each ride request is characterized by three attributes: `rideNumber`, `rideCost`, and `tripDuration`. The Min Heap is indexed by `rideCost`, and the nodes in the Red-Black Tree are stored based on `rideNumber`. The implementation aims to perform basic operations, such as insertion, deletion, and search, in O(log n) time complexity (except for the range print operation).
+This project implements a ride-sharing service that manages pending ride requests using a combination of a Red-Black Tree and a Min Heap. Each ride is characterized by three attributes: `rideNumber`, `rideCost`, and `tripDuration`. The Min Heap is used to index rides by `rideCost`, while the Red-Black Tree stores nodes based on `rideNumber`. The goal is to achieve efficient operations with a time complexity of O(log n) for basic operations, except for range printing.
 
 ## Data Representation
 
-Each ride has the following attributes:
+Ride attributes:
 
-1. `rideNumber`: A unique identifier for a specific ride.
-2. `rideCost`: The cost of the ride.
-3. `tripDuration`: The time it takes to complete the trip.
+- **Ride Number:** Unique identifier for each ride.
+- **Ride Cost:** Cost of the ride.
+- **Trip Duration:** Duration of the trip.
 
-Two classes are defined to represent the data:
+## Red-Black Tree Representation
 
-### Red-Black Tree Node (`redBlack`)
-
-```java
+```
 public class redBlack {
     public int rideNumber;
     public int rideCost;
@@ -34,21 +30,11 @@ public class redBlack {
     public char color;
     public minHeap corressHeap;
 }
+```
 
-In the `redBlack` class:
-- `left` and `right` point to the left and right children of the Red-Black Tree.
-- `color` stores the color of the node ('r' for red, 'b' for black).
-- `corressHeap` holds the corresponding `minHeap` object.
+## Min Heap Tree Representation
 
-
-In the `minHeap` class:
-- The heap is ordered by `rideCost`.
-- `corressRedBlack` links to the corresponding `redBlack` node for quick access.
-
-
-**Min Heap Node (`minHeap`)**
-
-```java
+```
 public class minHeap {
     // Ordered by ride cost
     public int rideNumber;
@@ -57,35 +43,80 @@ public class minHeap {
     public int index = 0;
     public redBlack corressRedBlack;
 }
+```
+
+### Implementation
+
+### Red-Black Tree
+
+#### Insertion
+
+1. Insert into the Red-Black Tree as in a normal binary search tree.
+2. Perform tree rebalancing if necessary.
+3. Rebalancing is needed when two consecutive nodes are red.
+4. Perform rotations according to XYZ notation.
+
+#### Deletion
+
+1. Divided deletion cases into two steps:
+   - Find the node to be deleted while tracking the path and swap it with the largest node in the right subtree if it's a level two node.
+   - After finding the node to delete, perform the deletion and rebalance the tree if needed.
+
+#### Search
+
+- Searching in the Red-Black Tree is like searching in a BST.
+- For range searches, traverse only the branches that might contain values within the range.
+
+### Min Heap
+
+#### Remove Min
+
+1. Replace the last element with the first element in the heap, decrease the heap size.
+2. Heapify the element downward by swapping with the smallest child if necessary.
+
+#### Arbitrary Remove
+
+1. Change the value of the arbitrary node to the minimum value, then heapify it up the tree and perform remove min.
+
+#### Insert
+
+1. Insert a new element at the last position in the heap.
+2. Heapify up by comparing child's ride cost with parent's ride cost and swapping if needed.
+
+### Function Prototypes and Time Complexities
+
+#### Min Heap
+
+- `int insertIntoHeap(int rideNumber, int rideCost, int tripDuration, minHeap[] mh, int track)`
+  - Insert an element into the min heap and heapify.
+  - Time Complexity: O(log n)
+  - Space Complexity: O(1)
+
+- `public static int deleteMinNode(minHeap[] mh, int track)`
+  - Delete the minimum element in the heap and heapify.
+  - Time Complexity: O(log n)
+  - Space Complexity: O(1)
+
+- `public static void makeCurrentNodeMin(int index, minHeap[] mh, int track)`
+  - Make an arbitrary node the minimum and heapify.
+  - Time Complexity: O(log n)
+  - Space Complexity: O(1)
+
+## Red-Black Trees
+
+1. `delete(root, rideNumber, st)`: Finds and deletes an element, with time and space complexities of O(log n) where n is the number of nodes.
+
+2. `performActualDelete(deleteCount, st)`: Deletes a node and performs tree rebalancing. Time: O(log n), Space: O(1).
+
+3. `findLargestONRight(root, st)`: Finds the largest element in the left subtree of a degree two node. Time: O(log n), Space: O(log n).
+
+4. `insert(rideNumber, rideCost, tripDuration, root, st)`: Inserts a node into the tree. Time: O(log n), Space: O(1).
+
+5. `reBalanceRedBlack(st)`: Rebalances the tree after an insertion. Time: O(log n), Space: O(1).
 
 
-**Implementation**
-**Red-Black Tree**
-**Insertion**
-- Insert into the Red-Black Tree as if inserting into a normal Binary Search Tree.
-- Perform tree rebalancing if necessary:
-  - Check if rebalancing is needed based on node colors.
-  - Apply rotation operations according to the XYZ notation.
+## Conclusion
 
-**Deletion**
-- Divided the delete cases into two steps.
-  - Find the element to be deleted and add nodes along the path.
-  - If the node to be deleted is a level two node, replace it with the largest node in the right subtree and delete that node.
-- Perform delete and rebalance operations.
+This project successfully implements a ride-sharing service using a Red-Black Tree and a Min Heap to efficiently manage ride requests, insertions, deletions, and searches while maintaining logarithmic time complexity for most operations. The combination of these data structures ensures optimal performance and responsiveness for the ride-sharing application.
 
-**Search**
-- Search in the Red-Black Tree is similar to searching in a Binary Search Tree.
-- For range printing, avoid traversing branches that do not contain values in the range.
 
-**Min Heap**
-- The children of a node with index `i` are at indices `2*i+1` and `2*i+2`.
-- Implement operations like `insert`, `removeMin`, and `arbitraryRemove` following the heap property.
-
-**Function Prototypes and Time Complexities**
-- Refer to the project's code comments for detailed function prototypes and their respective time and space complexities.
-
-**General Operations**
-- Various operations, including inserting into the Red-Black Tree and Min Heap, deleting, searching, and updating rides, are implemented. Refer to the project's code comments for specific details about these operations and their time and space complexities.
-
-**Note**
-- This README provides an overview of the project's structure and implementation. Refer to the source code for comprehensive details on the code implementation and usage. For any inquiries, feel free to contact Venkat Sai Putagumpalla at v.putagumpalla@ufl.edu.
